@@ -1,0 +1,99 @@
+line-by-line explanation of the key sections of each script used in your project. For each script, I'll highlight important functionality, followed by a line-by-line breakdown. 
+1. Process Management Script (process_management.sh)
+
+Code Example:   
+
+#!/bin/bash
+echo "Current Running Processes:"
+ps aux
+read -p "Enter PID to kill: " pid
+kill $pid 
+
+Explanation:
+
+    #!/bin/bash: This line defines the script's interpreter, indicating that it should be run using the Bash shell.
+    echo "Current Running Processes:": Prints a message to the terminal, indicating that the next output will list running processes.
+    ps aux: Executes the ps command with options a, u, and x to display information about all running processes.
+        a: Show processes for all users.
+        u: Show user-oriented format (includes username).
+        x: Include processes without a controlling terminal.
+    read -p "Enter PID to kill: " pid: Prompts the user to enter a Process ID (PID). The entered PID is stored in the variable pid.
+    kill $pid: This command attempts to terminate the process with the specified PID. If the PID is valid, the corresponding process will be killed.
+
+
+
+
+2. Disk Monitoring Script (disk_monitoring.sh)
+Code Example:   
+
+#!/bin/bash
+df -h | awk '$5 > 80 {print "Warning: Disk usage at "$5}' 
+
+Explanation:
+
+    #!/bin/bash: Indicates that the script should be run using the Bash shell.
+    df -h: Executes the df command to display disk space usage in a human-readable format.
+        -h: Gives sizes in "human-readable" format (e.g., GB or MB).
+    |: The pipe operator takes the output of the df -h command and sends it as input to the following command (awk).
+    awk '$5 > 80 {print "Warning: Disk usage at "$5}': This part processes the output from df.
+        $5: Refers to the fifth column of the df output, which contains the percentage of disk space used.
+        > 80: Checks if the disk usage percentage exceeds 80%.
+        {print "Warning: Disk usage at "$5}: If the condition is true, it prints a warning message indicating the current disk usage.
+
+
+
+
+3. System Health Monitoring Script (health_monitoring.sh)
+Code Example:
+
+#!/bin/bash
+echo "CPU Load: $(uptime)"
+echo "Memory Usage: $(free -h)"  
+
+Explanation:
+
+    #!/bin/bash: Specifies that the script should run under the Bash shell.
+    echo "CPU Load: $(uptime)":
+        uptime: This command gives information about the system load averages for the past 1, 5, and 15 minutes.
+        $(...): Command substitution, which means that the output of the uptime command will be included in the string.
+        The entire line prints the current CPU load as part of the message.
+    echo "Memory Usage: $(free -h)":
+        free -h: Displays the total, used, and free amount of memory in the system in a human-readable format.
+        Again, $(...) captures this output and includes it in the printed message.
+
+
+
+
+
+4. User Management Script (user_management.sh)
+Code Example:
+
+#!/bin/bash
+case $1 in
+    add)
+        sudo adduser $2
+        ;;
+    delete)
+        sudo deluser $2
+        ;;
+    list)
+        cut -d: -f1 /etc/passwd
+        ;;
+    *)
+        echo "Usage: $0 {add|delete|list} [username]"
+esac
+
+Explanation:
+
+    #!/bin/bash: Indicates the script is to be interpreted by the Bash shell.
+    case $1 in: Begins a case statement that examines the first argument passed to the script ($1).
+    add): If the first argument is add, the following commands execute:
+        sudo adduser $2: Uses sudo to run the adduser command, which creates a new user with the username provided in the second argument ($2).
+    delete): If the first argument is delete, the following command executes:
+        sudo deluser $2: Uses sudo to run the deluser command, which deletes the user specified by the second argument.
+    list): If the first argument is list, the following command executes:
+        cut -d: -f1 /etc/passwd: This command processes the /etc/passwd file, extracting the first field (-f1), which contains usernames. -d: specifies that : is the delimiter.
+    *): This catch-all option runs if none of the preceding conditions are met, executing:
+        echo "Usage: $0 {add|delete|list} [username]": Prints the correct usage of the script to the console, guiding the user on how to invoke the script properly.
+    esac: Ends the case statement.
+
